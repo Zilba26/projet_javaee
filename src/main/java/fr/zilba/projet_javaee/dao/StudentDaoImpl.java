@@ -24,7 +24,6 @@ public class StudentDaoImpl implements StudentDao {
             preparedStatement = connexion.prepareStatement("INSERT INTO `students`(`first_name`, `last_name`, `gender`, `last_place`, `last_formation`) VALUES (?, ?, ?, ?, ?)");
             preparedStatement.setString(1, student.getFirstName());
             preparedStatement.setString(2, student.getLastName());
-            System.out.println(student.getGender().toString());
             preparedStatement.setString(3, student.getGender().toString());
             preparedStatement.setString(4, student.getLastPlace());
             preparedStatement.setString(5, student.getLastFormation());

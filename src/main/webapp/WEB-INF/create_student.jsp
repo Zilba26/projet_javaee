@@ -38,5 +38,8 @@
         <input type="file" name="fichier" id="fichier" />
         <input type="submit" value="Importez" name="csv_submit" id="csv_submit">
     </form>
+    <c:if test="${not empty studentImported}">
+        <label for="fichier">${studentImported} étudiants importés</label>
+    </c:if>
 </body>
 </html>

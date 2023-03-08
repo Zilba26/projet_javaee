@@ -2,6 +2,9 @@ package fr.zilba.projet_javaee.servlet;
 
 import java.io.*;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 import com.opencsv.CSVReader;
 import fr.zilba.projet_javaee.beans.Gender;
@@ -53,17 +56,22 @@ public class CreateStudent extends HttpServlet {
         if (csv_submit != null) {
             try {
                 Part part = request.getPart("fichier");
-                System.out.println(part.getSubmittedFileName());
-                CSVReader reader = new CSVReader(new InputStreamReader(part.getInputStream()));
+                CSVReader reader = new CSVReader(new InputStreamReader(part.getInputStream(), StandardCharsets.UTF_8));
 
-                String[] nextLine;
+                List<String[]> rows = reader.readAll();
+                int studentImported = 0;
 
-                while ((nextLine = reader.readNext()) != null) {
-
-                    for (var e : nextLine) {
-                        System.out.format("%s ", e);
+                for (String[] row : rows) {
+                    for (String cell : row) {
+                        List<String> cells = Arrays.asList(cell.split(";"));
+                        Student student = new Student(cells.get(0), cells.get(1), Gender.valueOf(cells.get(2)), cells.get(3), cells.get(4));
+                        studentDao.add(student);
+                        studentImported++;
                     }
                 }
+
+                request.setAttribute("studentImported", studentImported);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

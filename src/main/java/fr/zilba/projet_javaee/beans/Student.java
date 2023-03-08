@@ -55,4 +55,13 @@ public class Student {
     public void setLastFormation(String lastFormation) {
         this.lastFormation = lastFormation;
     }
+
+    public void print() {
+        System.out.println("Student :");
+        System.out.println("    First name : " + this.firstName);
+        System.out.println("    Last name : " + this.lastName);
+        System.out.println("    Gender : " + this.gender);
+        System.out.println("    Last place : " + this.lastPlace);
+        System.out.println("    Last formation : " + this.lastFormation);
+    }
 }
