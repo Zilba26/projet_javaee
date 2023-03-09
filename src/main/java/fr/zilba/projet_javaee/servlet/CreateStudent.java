@@ -49,7 +49,8 @@ public class CreateStudent extends HttpServlet {
             String gender = request.getParameter("gender");
             String lastPlace = request.getParameter("lastPlace");
             String lastFormation = request.getParameter("lastFormation");
-            Student student = new Student(firstName, lastName, Gender.valueOf(gender), lastPlace, lastFormation);
+            int teamId = Integer.parseInt(request.getParameter("teamId"));
+            Student student = new Student(null, firstName, lastName, Gender.valueOf(gender), lastPlace, lastFormation, teamId);
             studentDao.add(student);
         }
 
@@ -61,10 +62,12 @@ public class CreateStudent extends HttpServlet {
                 List<String[]> rows = reader.readAll();
                 int studentImported = 0;
 
+                studentDao.deleteAll();
+
                 for (String[] row : rows) {
                     for (String cell : row) {
                         List<String> cells = Arrays.asList(cell.split(";"));
-                        Student student = new Student(cells.get(0), cells.get(1), Gender.valueOf(cells.get(2)), cells.get(3), cells.get(4));
+                        Student student = new Student(null, cells.get(0), cells.get(1), Gender.valueOf(cells.get(2)), cells.get(3), cells.get(4), null);
                         studentDao.add(student);
                         studentImported++;
                     }

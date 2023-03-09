@@ -5,6 +5,6 @@
 </head>
 <body>
 <a href="create-student">Création d'étudiants</a>
-<a href="team-management">Hello Servlet</a>
+<a href="team-management">Gestion d'équipes</a>
 </body>
 </html>

@@ -32,30 +32,71 @@ public class StudentDaoImpl implements StudentDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
+    @Override
+    public void deleteAll() {
+        Connection connexion = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connexion = daoFactory.getConnection();
+            preparedStatement = connexion.prepareStatement("DELETE FROM `students`");
+
+            preparedStatement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void changeTeam(int teamId, int studentId) {
+        Connection connexion = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connexion = daoFactory.getConnection();
+            preparedStatement = connexion.prepareStatement("UPDATE `students` SET `team_id` = ? WHERE `id` = ?");
+
+            String teamIdString = null;
+            if (teamId != 0) {
+                teamIdString = String.valueOf(teamId);
+            }
+            preparedStatement.setString(1, teamIdString);
+            preparedStatement.setString(2, String.valueOf(studentId));
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public List<Student> list() {
         List<Student> students = new ArrayList<Student>();
-        Connection connexion = null;
-        Statement statement = null;
-        ResultSet resultat = null;
+        Connection connexion;
+        Statement statement;
+        ResultSet result;
 
         try {
             connexion = daoFactory.getConnection();
             statement = connexion.createStatement();
-            resultat = statement.executeQuery("SELECT * FROM students;");
+            result = statement.executeQuery("SELECT * FROM students ORDER BY last_name, first_name;");
 
-            while (resultat.next()) {
-                String firstName = resultat.getString("first_name");
-                String lastName = resultat.getString("last_name");
-                Gender gender = Gender.valueOf(resultat.getString("gender"));
-                System.out.println(gender);
-                String lastPlace = resultat.getString("last_place");
-                String lastFormation = resultat.getString("last_formation");
+            while (result.next()) {
+                int id = result.getInt("id");
+                String firstName = result.getString("first_name");
+                String lastName = result.getString("last_name");
+                Gender gender = Gender.valueOf(result.getString("gender"));
+                String lastPlace = result.getString("last_place");
+                String lastFormation = result.getString("last_formation");
+                String teamIdString = result.getString("team_id");
+                Integer teamId = null;
+                if (teamIdString != null) {
+                    teamId = Integer.parseInt(teamIdString);
+                }
 
-                Student student = new Student(firstName, lastName, gender, lastPlace, lastFormation);
+                Student student = new Student(id, firstName, lastName, gender, lastPlace, lastFormation, teamId);
                 students.add(student);
             }
         } catch (SQLException e) {
