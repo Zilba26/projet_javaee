@@ -68,7 +68,7 @@ public class Student {
         this.lastFormation = lastFormation;
     }
 
-    public int getTeamId() {
+    public Integer getTeamId() {
         return teamId;
     }
 
@@ -87,5 +87,9 @@ public class Student {
         System.out.println("    Last place : " + this.lastPlace);
         System.out.println("    Last formation : " + this.lastFormation);
         System.out.println("    Team ID : " + this.teamId);
+    }
+
+    public String toString() {
+        return this.firstName + " " + this.lastName;
     }
 }

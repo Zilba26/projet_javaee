@@ -1,8 +1,22 @@
 package fr.zilba.projet_javaee.dao;
 
+import fr.zilba.projet_javaee.beans.Team;
+
+import java.util.List;
+
 public interface TeamDao {
 
-    void changeTeamNb(int nbTeams);
+    void addTeam(String teamName);
 
-    int getTeamNb();
+    default void addTeam(int nbTeam) {
+        addTeam("Team " + nbTeam);
+    }
+
+    void deleteTeam(int teamId);
+
+    void changeTeamName(int teamId, String teamName);
+
+    List<Team> list();
+
+    void addStudentsAuto();
 }

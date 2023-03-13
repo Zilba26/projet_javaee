@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StudentDaoImpl implements StudentDao {
-    private DaoFactory daoFactory;
+    private final DaoFactory daoFactory;
 
     StudentDaoImpl(DaoFactory daoFactory) {
         this.daoFactory = daoFactory;
@@ -16,8 +16,8 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public void add(Student student) {
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
+        Connection connexion;
+        PreparedStatement preparedStatement;
 
         try {
             connexion = daoFactory.getConnection();
@@ -36,14 +36,14 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public void deleteAll() {
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
+        Connection connexion;
+        PreparedStatement preparedStatement;
 
         try {
             connexion = daoFactory.getConnection();
             preparedStatement = connexion.prepareStatement("DELETE FROM `students`");
 
-            preparedStatement.executeQuery();
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -51,8 +51,8 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public void changeTeam(int teamId, int studentId) {
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
+        Connection connexion;
+        PreparedStatement preparedStatement;
 
         try {
             connexion = daoFactory.getConnection();
@@ -73,7 +73,7 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public List<Student> list() {
-        List<Student> students = new ArrayList<Student>();
+        List<Student> students = new ArrayList<>();
         Connection connexion;
         Statement statement;
         ResultSet result;
