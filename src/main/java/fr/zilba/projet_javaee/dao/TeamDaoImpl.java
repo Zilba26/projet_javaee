@@ -5,10 +5,7 @@ import fr.zilba.projet_javaee.beans.Student;
 import fr.zilba.projet_javaee.beans.Team;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TeamDaoImpl implements TeamDao {
     private DaoFactory daoFactory;
@@ -92,25 +89,27 @@ public class TeamDaoImpl implements TeamDao {
     }
 
     @Override
-    public void addStudentsAuto() {
-        Connection connexion = null;
-        Statement statement = null;
-        ResultSet result = null;
+    public void addStudentsAuto(Integer criteria) {
+        Connection connexion;
+        Statement statement;
+        ResultSet result;
 
         try {
             List<Team> teams = list();
             List<Student> students = new ArrayList<>();
             Map<Integer, Integer> studentsByTeam = new HashMap<>();
-            for(int i = 0; i < teams.size(); i++){
-                studentsByTeam.put(teams.get(i).getId(), 0);
+            for (Team team : teams) {
+                studentsByTeam.put(team.getId(), 0);
             }
             int minNbPerTeam = 0;
 
             connexion = daoFactory.getConnection();
             statement = connexion.createStatement();
             result = statement.executeQuery("SELECT * FROM `students`");
+            int nbStudents = 0;
 
             while (result.next()) {
+                nbStudents++;
                 int id = result.getInt("id");
                 String firstName = result.getString("first_name");
                 String lastName = result.getString("last_name");
@@ -134,31 +133,24 @@ public class TeamDaoImpl implements TeamDao {
                 }
             }
 
-            int i = 0;
-            for (int j = students.size() ; j > 0 ; j--) {
+            switch (criteria) {
+                case 0:
+                    Collections.shuffle(students);
+                    break;
+                case 1:
+                    students.sort(Comparator.comparing(Student::getLastName));
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + criteria);
+            }
 
-                int maxLoop = 0;
-
-                while (studentsByTeam.get(teams.get(i).getId()) >= minNbPerTeam) {
-                    i++;
-                    if (i >= teams.size()) {
-                        i = 0;
-                        minNbPerTeam++;
-                    }
-                    maxLoop++;
-                    if (maxLoop > 10000) {
-                        throw new RuntimeException("Erreur dans la répartition des étudiants, Loop infini");
-                    }
-                }
-
-                Student randomStudent = students.get((int) (Math.random() * j));
-                students.remove(randomStudent);
-
-                statement.executeUpdate("UPDATE `students` SET `team_id` = " + teams.get(i).getId() + " WHERE `id` = " + randomStudent.getId());
-                studentsByTeam.replace(teams.get(i).getId(), studentsByTeam.get(teams.get(i).getId()) + 1);
-                i++;
-                if (i >= teams.size()) {
-                    i = 0;
+            int minMaxStudentsPerTeam = nbStudents / teams.size();
+            int reste = nbStudents % teams.size();
+            for (Team team : teams) {
+                while (studentsByTeam.get(team.getId()) < minMaxStudentsPerTeam + (reste > teams.indexOf(team) ? 1 : 0)) {
+                    Student randomStudent = students.remove(0);
+                    statement.executeUpdate("UPDATE `students` SET `team_id` = " + team.getId() + " WHERE `id` = " + randomStudent.getId());
+                    studentsByTeam.replace(team.getId(), studentsByTeam.get(team.getId()) + 1);
                 }
             }
         } catch (SQLException e) {

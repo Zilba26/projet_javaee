@@ -18,5 +18,9 @@ public interface TeamDao {
 
     List<Team> list();
 
-    void addStudentsAuto();
+    default void addStudentsAuto() {
+        addStudentsAuto(0);
+    };
+
+    void addStudentsAuto(Integer criteria);
 }

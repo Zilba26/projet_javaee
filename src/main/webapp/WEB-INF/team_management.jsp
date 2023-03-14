@@ -89,7 +89,16 @@
                 <input type="hidden" class="studentId" name="studentId" />
                 <div class="row" style="align-items: center">
                     <h2>Étudiants sans équipe</h2>
-                    <button type="submit" name="auto_compo">Composition automatique</button>
+                    <div class="row align" style="gap: 10px">
+                        <div class="column" style="gap: 4px">
+                            <label for="auto_compo">Générer des équipes</label>
+                            <select name="criteria" id="auto_compo">
+                                <option value="0">Aléatoire</option>
+                                <option value="1">Ordre alphabétique</option>
+                            </select>
+                        </div>
+                        <button type="submit" name="auto_compo" value="true">Générer</button>
+                    </div>
                 </div>
                 <ul class="column">
                     <c:forEach items="${students}" var="student">

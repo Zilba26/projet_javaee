@@ -64,7 +64,8 @@ public class TeamManagement extends HttpServlet {
                 String teamName = request.getParameter("teamName");
                 teamDao.changeTeamName(Integer.parseInt(teamId), teamName);
             } else if (autoCompo != null) {
-                teamDao.addStudentsAuto();
+                int criteria = Integer.parseInt(request.getParameter("criteria"));
+                teamDao.addStudentsAuto(criteria);
             } else {
                 String studentId = request.getParameter("studentId");
                 studentDao.changeTeam(Integer.parseInt(teamId), Integer.parseInt(studentId));
