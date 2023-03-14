@@ -1,7 +1,7 @@
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <html>
 <head>
-    <title>Creation d'etudiants</title>
+    <title>Création d'étudiants</title>
     <meta charset="utf-8">
     <style>
         body {
@@ -64,6 +64,9 @@
     </form>
     <c:if test="${not empty studentImported}">
         <label for="fichier">${studentImported} étudiants importés</label>
+    </c:if>
+    <c:if test="${not empty error}">
+        <p class="error">${error}</p>
     </c:if>
 </section>
 </body>

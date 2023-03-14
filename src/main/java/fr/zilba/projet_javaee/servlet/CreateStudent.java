@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import fr.zilba.projet_javaee.beans.BeanException;
 import fr.zilba.projet_javaee.beans.Gender;
 import fr.zilba.projet_javaee.beans.Student;
@@ -84,8 +85,12 @@ public class CreateStudent extends HttpServlet {
 
                 request.setAttribute("studentImported", studentImported);
 
-            } catch (Exception e) {
+            } catch (BeanException e) {
                 e.printStackTrace();
+                request.setAttribute("error", "Une erreur a lieu dans les informations des étudiants (" + e.getMessage() + ")");
+            } catch (CsvException e) {
+                e.printStackTrace();
+                request.setAttribute("error", "Impossible d'importer le fichier. Vérifiez le format");
             }
         }
 
