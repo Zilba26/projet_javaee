@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.opencsv.CSVReader;
+import fr.zilba.projet_javaee.beans.BeanException;
 import fr.zilba.projet_javaee.beans.Gender;
 import fr.zilba.projet_javaee.beans.Student;
 import fr.zilba.projet_javaee.dao.DaoFactory;
@@ -40,6 +41,9 @@ public class CreateStudent extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
 
         String firstSubmit = request.getParameter("classic_submit");
         String csv_submit = request.getParameter("csv_submit");
@@ -50,9 +54,13 @@ public class CreateStudent extends HttpServlet {
             String gender = request.getParameter("gender");
             String lastPlace = request.getParameter("lastPlace");
             String lastFormation = request.getParameter("lastFormation");
-            int teamId = Integer.parseInt(request.getParameter("teamId"));
-            Student student = new Student(null, firstName, lastName, Gender.valueOf(gender), lastPlace, lastFormation, teamId);
-            studentDao.add(student);
+            Student student = new Student(null, firstName, lastName, Gender.valueOf(gender), lastPlace, lastFormation, null);
+            try {
+                studentDao.add(student);
+            } catch (BeanException e) {
+                request.setAttribute("error", e.getMessage());
+                request.setAttribute("student", student);
+            }
         }
 
         if (csv_submit != null) {
@@ -63,7 +71,7 @@ public class CreateStudent extends HttpServlet {
                 List<String[]> rows = reader.readAll();
                 int studentImported = 0;
 
-                studentDao.deleteAll();
+                //studentDao.deleteAll();
 
                 for (String[] row : rows) {
                     for (String cell : row) {

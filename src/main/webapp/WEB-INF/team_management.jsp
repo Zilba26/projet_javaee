@@ -1,8 +1,9 @@
+<%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Equipes d'étudiants</title>
+    <title>Équipes d'étudiants</title>
     <style>
         body {
             margin: 0;
@@ -87,7 +88,7 @@
                 <input type="hidden" class="teamId" name="teamId" value="null"/>
                 <input type="hidden" class="studentId" name="studentId" />
                 <div class="row" style="align-items: center">
-                    <h2>Etudiants sans equipe</h2>
+                    <h2>Étudiants sans équipe</h2>
                     <button type="submit" name="auto_compo">Composition automatique</button>
                 </div>
                 <ul class="column">
@@ -103,16 +104,17 @@
         </form>
         <div class="teams_container">
             <div class="row">
-                <h2 class="flex">Equipes</h2>
-                <form method="post" id="add_student_form" class="align">
-                    <button type="submit" name="export_csv">Exporter</button>
+                <h2 class="flex">Équipes</h2>
+                <form method="post" id="add_student_form" class="align row" style="gap: 10px">
+                    <c:if test="${!empty exportCsv}"><label for="export_csv">${exportCsv}</label></c:if>
+                    <button type="submit" name="export_csv" id="export_csv">Exporter</button>
                 </form>
             </div>
             <div class="teams">
                 <c:forEach begin="0" end="${teams.size()}" var="i">
                     <c:if test="${i == teams.size()}">
                         <form method="post" id="add_team_form" class="align">
-                            <button type="submit" name="add_team" value="true">Ajouter une equipe</button>
+                            <button type="submit" name="add_team" value="true">Ajouter une équipe</button>
                         </form>
                     </c:if>
                     <c:if test="${i != teams.size()}">
@@ -138,7 +140,7 @@
                                         </c:if>
                                     </c:forEach>
                                     <c:if test="${studentNb == 0}">
-                                        <p>Aucun etudiant</p>
+                                        <p>Aucun étudiant</p>
                                     </c:if>
                                 </div>
                             </div>

@@ -1,5 +1,6 @@
 package fr.zilba.projet_javaee.dao;
 
+import fr.zilba.projet_javaee.beans.BeanException;
 import fr.zilba.projet_javaee.beans.Gender;
 import fr.zilba.projet_javaee.beans.Student;
 
@@ -15,7 +16,16 @@ public class StudentDaoImpl implements StudentDao {
     }
 
     @Override
-    public void add(Student student) {
+    public void add(Student student) throws BeanException {
+        if (student.getFirstName().isEmpty()) {
+            if (student.getLastName().isEmpty()) {
+                throw new BeanException("Le prénom et le nom ne peuvent pas être vide");
+            }
+            throw new BeanException("Le prénom ne peut pas être vide");
+        }
+        if (student.getLastName().isEmpty()) {
+            throw new BeanException("Le nom ne peut pas être vide");
+        }
         Connection connexion;
         PreparedStatement preparedStatement;
 

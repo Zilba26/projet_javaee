@@ -13,11 +13,12 @@ import jakarta.servlet.annotation.*;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.ResourceBundle;
 
 @WebServlet(name = "TeamManagement", value = "/team-management")
 public class TeamManagement extends HttpServlet {
 
-    private static final int TAILLE_TAMPON = 10240;
+    public static final ResourceBundle CONFIGURATION = ResourceBundle.getBundle("config");
     private StudentDao studentDao;
     private TeamDao teamDao;
 
@@ -80,15 +81,21 @@ public class TeamManagement extends HttpServlet {
         if (exportCsvButton != null) {
             List<Student> students = studentDao.list();
             List<Team> teams = teamDao.list();
-            exportCsv(students, teams, "C:\\downloadFilesJavaEE\\students_with_teams.csv");
-            //TODO : configurer le chemin
+            String exportPath = CONFIGURATION.getString("EXPORT_PATH_CSV");
+            String exportNameFile = CONFIGURATION.getString("EXPORT_NAME_FILE_CSV");
+            boolean goodExport = exportCsv(students, teams, exportPath + "\\" + exportNameFile);
+            if (goodExport) {
+                request.setAttribute("exportCsv", "Export CSV réussi");
+            } else {
+                request.setAttribute("exportCsv", "Export CSV échoué (vérifiez le fichier de configuration)");
+            }
         }
 
         this.doGet(request, response);
         //this.getServletContext().getRequestDispatcher("/WEB-INF/team_management.jsp").forward(request, response);
     }
 
-    public void exportCsv(List<Student> students, List<Team> teams, String fileNameWithPath) {
+    public boolean exportCsv(List<Student> students, List<Team> teams, String fileNameWithPath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileNameWithPath))) {
             // Écrire l'en-tête du fichier CSV
             writer.write("nom,prenom,nom_equipe\n");
@@ -110,8 +117,10 @@ public class TeamManagement extends HttpServlet {
                     writer.newLine();
                 }
             }
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 

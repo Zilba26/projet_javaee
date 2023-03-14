@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 
 public class DaoFactory {
 
-    //public static final ResourceBundle CONFIGURATION = ResourceBundle.getBundle("config");
+    public static final ResourceBundle CONFIGURATION = ResourceBundle.getBundle("config");
     private final String url;
     private final String username;
     private final String password;
@@ -26,12 +26,14 @@ public class DaoFactory {
             e.printStackTrace();
         }
 
-//        String dbName = CONFIGURATION.getString("DATABASE_NAME");
-//        String username = CONFIGURATION.getString("USERNAME");
-//        String password = CONFIGURATION.getString("PASSWORD");
+        String server_name = CONFIGURATION.getString("SERVER_NAME");
+        String port = CONFIGURATION.getString("SERVER_PORT");
+        String dbName = CONFIGURATION.getString("DATABASE_NAME");
+        String username = CONFIGURATION.getString("USERNAME");
+        String password = CONFIGURATION.getString("PASSWORD");
 
         DaoFactory instance = new DaoFactory(
-                "jdbc:mysql://localhost:3306/" + "projet_java_ee", "root", "");
+                "jdbc:mysql://" + server_name + ":" + port + "/" + dbName, username, password);
         return instance;
     }
 
@@ -39,7 +41,6 @@ public class DaoFactory {
         return DriverManager.getConnection(url, username, password);
     }
 
-    // Récupération du Dao
     public StudentDao getStudentDao() {
         return new StudentDaoImpl(this);
     }
